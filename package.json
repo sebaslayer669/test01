@@ -13,7 +13,8 @@
     "demo": "tsx demo.ts",
     "typecheck": "tsc --noEmit",
     "sync:public": "node scripts/sync-public.mjs",
-    "vercel-build": "node scripts/sync-public.mjs"
+    "build:vercel": "tsc -p tsconfig.vercel.json && node -e \"require('fs').writeFileSync('dist/package.json', JSON.stringify({type:'commonjs'}))\" && node scripts/sync-public.mjs",
+    "vercel-build": "npm run build:vercel"
   },
   "dependencies": {
     "@vercel/node": "^5.3.6",

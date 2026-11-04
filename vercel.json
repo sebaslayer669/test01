@@ -1,17 +1,17 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run sync:public",
+  "buildCommand": "npm run build:vercel",
   "functions": {
-    "api/health.ts": {
+    "api/health.mjs": {
       "includeFiles": "fixtures/**"
     },
-    "api/chat.ts": {
+    "api/chat.mjs": {
       "maxDuration": 60,
       "memory": 1024,
-      "includeFiles": "fixtures/**"
+      "includeFiles": "fixtures/**,dist/**"
     },
-    "api/sessions/[id].ts": {
-      "includeFiles": "fixtures/**"
+    "api/sessions/[id].mjs": {
+      "includeFiles": "dist/**"
     }
   }
 }
