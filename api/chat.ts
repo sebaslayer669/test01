@@ -24,6 +24,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(result.status).json(result.body)
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    res.status(500).json({ ok: false, error: message })
+    const stack = err instanceof Error ? err.stack : undefined
+    console.error("[api/chat]", message, stack)
+    res.status(500).json({
+      ok: false,
+      error: message,
+      hint:
+        "Revisa logs de la función en Vercel. Suele fallar por fixtures/pdfkit no incluidos o FS de solo lectura.",
+    })
   }
 }

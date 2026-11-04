@@ -46,21 +46,22 @@ function contentType(filePath: string): string {
 }
 
 function serveStatic(res: http.ServerResponse, urlPath: string): void {
-  const webRoot = path.join(ROOT, "web")
+  // Preferir public/ (Vercel) y caer a web/ (desarrollo local).
+  const roots = [path.join(ROOT, "public"), path.join(ROOT, "web")]
   let rel = urlPath === "/" ? "/index.html" : urlPath
   rel = decodeURIComponent(rel.split("?")[0] ?? rel)
-  const filePath = path.normalize(path.join(webRoot, rel))
-  if (!filePath.startsWith(webRoot)) {
-    json(res, 403, { ok: false, error: "Forbidden" })
+
+  for (const webRoot of roots) {
+    const filePath = path.normalize(path.join(webRoot, rel))
+    if (!filePath.startsWith(webRoot)) continue
+    if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) continue
+    const data = fs.readFileSync(filePath)
+    res.writeHead(200, { "Content-Type": contentType(filePath) })
+    res.end(data)
     return
   }
-  if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
-    json(res, 404, { ok: false, error: "Not found" })
-    return
-  }
-  const data = fs.readFileSync(filePath)
-  res.writeHead(200, { "Content-Type": contentType(filePath) })
-  res.end(data)
+
+  json(res, 404, { ok: false, error: "Not found" })
 }
 
 const server = http.createServer(async (req, res) => {
