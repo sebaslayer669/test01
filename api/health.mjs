@@ -56,6 +56,7 @@ export default function handler(_req, res) {
     res.end(
       JSON.stringify({
         ok: true,
+        entry: "health.mjs",
         provider,
         model:
           provider === "interno"
