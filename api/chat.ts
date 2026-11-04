@@ -1,6 +1,16 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node"
 import { chatPayload } from "../src/api-app.js"
 
+export const config = {
+  maxDuration: 60,
+  memory: 1024,
+  includeFiles: [
+    "fixtures/**/*",
+    "modulo/**/*",
+    "agent/**/*",
+  ],
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Access-Control-Allow-Origin", "*")
   res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS")
@@ -30,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ok: false,
       error: message,
       hint:
-        "Revisa logs de la función en Vercel. Suele fallar por fixtures/pdfkit no incluidos o FS de solo lectura.",
+        "Revisa logs de la función en Vercel. Suele fallar por fixtures no incluidos o FS de solo lectura.",
     })
   }
 }
