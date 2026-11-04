@@ -1,0 +1,31 @@
+{
+  "name": "reto-01-registro-proveedor",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Agente conversacional — Registro como Proveedor (Reto 01 Periferia IT Group)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "demo": "tsx demo.ts",
+    "typecheck": "tsc --noEmit",
+    "sync:public": "node scripts/sync-public.mjs",
+    "vercel-build": "node scripts/sync-public.mjs"
+  },
+  "dependencies": {
+    "@vercel/node": "^5.3.6",
+    "exceljs": "^4.4.0",
+    "openai": "^4.104.0",
+    "pdfkit": "^0.17.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "@types/pdfkit": "^0.13.9",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}

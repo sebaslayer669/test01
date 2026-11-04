@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/chat.ts": {
+      "maxDuration": 60,
+      "includeFiles": "{fixtures/**,modulo/**,agent/**,src/**}"
+    },
+    "api/health.ts": {
+      "includeFiles": "{fixtures/**,modulo/**,agent/**,src/**}"
+    },
+    "api/sessions/[id].ts": {
+      "includeFiles": "{fixtures/**,modulo/**,agent/**,src/**}"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" }
+  ]
+}
