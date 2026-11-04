@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Periferia · Registro como Proveedor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="top">
+        <div>
+          <p class="brand">Periferia IT Group</p>
+          <h1>Registro como proveedor</h1>
+        </div>
+        <div class="meta">
+          <span id="health-pill" class="pill pill-warn">health…</span>
+          <button type="button" id="btn-new" class="ghost">Nueva sesión</button>
+        </div>
+      </header>
+
+      <section class="keywords" aria-label="Palabras clave por caso">
+        <p class="keywords-title">
+          Usa el <strong>id exacto del caso</strong> (palabra clave). Clic = envía el prompt listo:
+        </p>
+        <div id="case-chips" class="case-chips"></div>
+        <p class="keywords-hint">
+          Tras procesar: escribe <code>sí</code> o <code>envía</code> para simular envío ·
+          <code>no</code> para cancelar
+        </p>
+      </section>
+
+      <section id="confirm-banner" class="confirm-banner hidden" role="status">
+        El agente espera tu confirmación. Responde con la palabra clave
+        <strong>sí</strong> o <strong>envía</strong>.
+      </section>
+
+      <section id="log" class="log" aria-live="polite"></section>
+
+      <form id="composer" class="composer">
+        <label class="sr-only" for="message">Mensaje</label>
+        <textarea
+          id="message"
+          rows="3"
+          placeholder='Palabra clave obligatoria: id del caso. Ej: Procesa el caso "ec-corp-andina". No envíes nada todavía.'
+          required
+        ></textarea>
+        <div class="composer-actions">
+          <span id="thinking" class="thinking hidden">Procesando caso…</span>
+          <button type="submit" id="btn-send">Enviar</button>
+        </div>
+      </form>
+    </div>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

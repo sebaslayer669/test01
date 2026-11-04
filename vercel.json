@@ -1,26 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run sync:public",
-  "cleanUrls": false,
-  "trailingSlash": false,
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "^/$", "dest": "/index.html" },
-    { "src": "^/api/health$", "dest": "/api/health" },
-    { "src": "^/api/chat$", "dest": "/api/chat" },
-    { "src": "^/api/sessions/(?<id>[^/]+)$", "dest": "/api/sessions/[id]?id=$id" }
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" }
   ],
   "functions": {
-    "api/chat.ts": {
+    "api/**/*.ts": {
       "maxDuration": 60,
-      "memory": 1024,
-      "includeFiles": "fixtures/**/*"
-    },
-    "api/health.ts": {
-      "includeFiles": "fixtures/**/*"
-    },
-    "api/sessions/[id].ts": {
-      "includeFiles": "fixtures/**/*"
+      "includeFiles": "fixtures/**"
     }
   }
 }
