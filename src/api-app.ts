@@ -2,10 +2,14 @@ import { loadEnv, getConfig } from "./lib/env.js"
 import { getProjectRoot } from "./lib/runtime.js"
 import { getOrCreateSession, getSession, saveSession } from "./sessions.js"
 
-const ROOT = getProjectRoot()
-loadEnv(ROOT)
+function projectRoot(): string {
+  const root = getProjectRoot()
+  loadEnv(root)
+  return root
+}
 
 export function healthPayload() {
+  projectRoot()
   const config = getConfig()
   return {
     ok: true,
@@ -60,17 +64,18 @@ export async function chatPayload(input: {
   }
 
   const session = getOrCreateSession(sessionId)
+  const root = projectRoot()
 
   // Lazy imports: evita que /api/health cargue exceljs/pdfkit/openai y tumbe el cold start.
   let result
   if (config.provider === "interno") {
     const { runInternoTurn } = await import("./agent-interno.js")
-    result = await runInternoTurn({ directory: ROOT, session, message })
+    result = await runInternoTurn({ directory: root, session, message })
   } else {
     const { runAgentTurn } = await import("./agent-loop.js")
     const { OpenAiAdapter } = await import("./llm/openai.js")
     result = await runAgentTurn({
-      directory: ROOT,
+      directory: root,
       session,
       message,
       adapter: new OpenAiAdapter(config.apiKey, config.model),

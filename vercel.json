@@ -15,7 +15,7 @@
     "api/chat.mjs": {
       "maxDuration": 60,
       "memory": 1024,
-      "includeFiles": "fixtures/**,dist/**"
+      "includeFiles": "{fixtures/**,dist/**}"
     },
     "api/sessions/[id].mjs": {
       "includeFiles": "dist/**"
