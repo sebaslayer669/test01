@@ -1,14 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node"
-import { chatPayload } from "../src/api-app.js"
 
 export const config = {
   maxDuration: 60,
-  memory: 1024,
-  includeFiles: [
-    "fixtures/**/*",
-    "modulo/**/*",
-    "agent/**/*",
-  ],
+  includeFiles: ["fixtures/**", "modulo/**", "agent/**"],
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -26,6 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    const { chatPayload } = await import("../src/api-app.js")
     const body =
       typeof req.body === "string"
         ? (JSON.parse(req.body) as { sessionId?: string; message?: string })
@@ -36,11 +31,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const message = err instanceof Error ? err.message : String(err)
     const stack = err instanceof Error ? err.stack : undefined
     console.error("[api/chat]", message, stack)
-    res.status(500).json({
-      ok: false,
-      error: message,
-      hint:
-        "Revisa logs de la función en Vercel. Suele fallar por fixtures no incluidos o FS de solo lectura.",
-    })
+    res.status(500).json({ ok: false, error: message })
   }
 }

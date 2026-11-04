@@ -1,12 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run sync:public",
-  "rewrites": [
-    { "source": "/", "destination": "/index.html" }
-  ],
   "functions": {
-    "api/**/*.ts": {
+    "api/health.ts": {
+      "includeFiles": "fixtures/**"
+    },
+    "api/chat.ts": {
       "maxDuration": 60,
+      "memory": 1024,
+      "includeFiles": "fixtures/**"
+    },
+    "api/sessions/[id].ts": {
       "includeFiles": "fixtures/**"
     }
   }

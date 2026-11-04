@@ -1,9 +1,6 @@
 import { loadEnv, getConfig } from "./lib/env.js"
 import { getProjectRoot } from "./lib/runtime.js"
-import { OpenAiAdapter } from "./llm/openai.js"
 import { getOrCreateSession, getSession, saveSession } from "./sessions.js"
-import { runAgentTurn } from "./agent-loop.js"
-import { runInternoTurn } from "./agent-interno.js"
 
 const ROOT = getProjectRoot()
 loadEnv(ROOT)
@@ -21,7 +18,9 @@ export function healthPayload() {
 
 export function sessionPayload(id: string) {
   const session = getSession(id)
-  if (!session) return { status: 404 as const, body: { ok: false, error: "Sesión no encontrada" } }
+  if (!session) {
+    return { status: 404 as const, body: { ok: false, error: "Sesión no encontrada" } }
+  }
   return {
     status: 200 as const,
     body: {
@@ -61,17 +60,24 @@ export async function chatPayload(input: {
   }
 
   const session = getOrCreateSession(sessionId)
-  const result =
-    config.provider === "interno"
-      ? await runInternoTurn({ directory: ROOT, session, message })
-      : await runAgentTurn({
-          directory: ROOT,
-          session,
-          message,
-          adapter: new OpenAiAdapter(config.apiKey, config.model),
-          maxIterations: config.maxToolIterations,
-          maxTokensPerSession: config.maxTokensPerSession,
-        })
+
+  // Lazy imports: evita que /api/health cargue exceljs/pdfkit/openai y tumbe el cold start.
+  let result
+  if (config.provider === "interno") {
+    const { runInternoTurn } = await import("./agent-interno.js")
+    result = await runInternoTurn({ directory: ROOT, session, message })
+  } else {
+    const { runAgentTurn } = await import("./agent-loop.js")
+    const { OpenAiAdapter } = await import("./llm/openai.js")
+    result = await runAgentTurn({
+      directory: ROOT,
+      session,
+      message,
+      adapter: new OpenAiAdapter(config.apiKey, config.model),
+      maxIterations: config.maxToolIterations,
+      maxTokensPerSession: config.maxTokensPerSession,
+    })
+  }
 
   saveSession(session)
 

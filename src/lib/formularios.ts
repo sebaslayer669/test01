@@ -1,7 +1,5 @@
 import path from "node:path"
 import fs from "node:fs"
-import ExcelJS from "exceljs"
-import PDFDocument from "pdfkit"
 import type { CampoLleno, CampoConfirmacion, CampoFaltante } from "../tools/types.js"
 import { ensureDir, writeTextFile } from "./paths.js"
 
@@ -35,8 +33,9 @@ export async function generarXlsx(opts: {
   confirmacion: CampoConfirmacion[]
   salida: string
 }): Promise<void> {
+  const ExcelJS = (await import("exceljs")).default
   const wb = new ExcelJS.Workbook()
-  const hojas = new Map<string, ExcelJS.Worksheet>()
+  const hojas = new Map<string, import("exceljs").Worksheet>()
 
   for (const item of opts.plantilla) {
     let sheet = hojas.get(item.hoja)
@@ -61,6 +60,7 @@ export async function generarPdf(opts: {
   salida: string
   cliente: string
 }): Promise<void> {
+  const PDFDocument = (await import("pdfkit")).default
   ensureDir(path.dirname(opts.salida))
   const doc = new PDFDocument({ margin: 50, size: "LETTER" })
   const stream = fs.createWriteStream(opts.salida)
